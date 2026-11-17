@@ -11,13 +11,13 @@
   function updatePanelSummary(panel, compose) {
     const draft = readDraft(compose);
     $('.onepws-panel-subject', panel).textContent = draft.subject.trim() || 'No subject yet';
-    $('.onepws-panel-message', panel).textContent = draft.body.trim() ? `${draft.body.trim().slice(0, 92)}${draft.body.trim().length > 92 ? '…' : ''}` : 'Write your message in Gmail, then open campaign studio.';
+    $('.onepws-panel-message', panel).textContent = draft.body.trim() ? `${draft.body.trim().slice(0, 92)}${draft.body.trim().length > 92 ? '...' : ''}` : 'Write your message in Gmail, then open campaign studio.';
   }
 
   async function openWorkspace(compose, panel) {
     const button = $('.onepws-open-workspace', panel);
     button.disabled = true;
-    button.textContent = 'Opening…';
+    button.textContent = 'Opening...';
     try {
       await chrome.runtime.sendMessage({ type: 'IMPORT_GMAIL_DRAFT', draft: readDraft(compose) });
       button.textContent = 'Opened in OnePWS';
@@ -39,7 +39,7 @@
     panel.className = 'onepws-gmail-panel';
     panel.setAttribute('aria-label', 'OnePWS campaign controls');
     panel.innerHTML = `
-      <header class="onepws-panel-header"><div><span class="onepws-panel-kicker">ONEPWS MAIL MERGE</span><strong>Campaign controls</strong></div><button type="button" class="onepws-panel-close" aria-label="Close OnePWS controls">×</button></header>
+      <header class="onepws-panel-header"><div><span class="onepws-panel-kicker">ONEPWS MAIL MERGE</span><strong>Campaign controls</strong></div><button type="button" class="onepws-panel-close" aria-label="Close OnePWS controls">Close</button></header>
       <div class="onepws-panel-body">
         <section class="onepws-panel-card onepws-draft-card"><span class="onepws-panel-label">GMAIL DRAFT</span><strong class="onepws-panel-subject"></strong><p class="onepws-panel-message"></p></section>
         <section class="onepws-panel-card"><div class="onepws-panel-title"><strong>Recipients & personalization</strong><span>01</span></div><p>Import a CSV or Google Sheet, choose the email column, and insert fields such as <code>{{FirstName}}</code>.</p><button type="button" class="onepws-open-workspace">Open campaign studio</button></section>
@@ -55,7 +55,8 @@
 
   function addComposeButton(compose) {
     if (compose.querySelector('.onepws-compose-button')) return;
-    const toolbar = compose.querySelector('[role="toolbar"]');
+    const sendButton = compose.querySelector('[role="button"][aria-label^="Send"], [data-tooltip^="Send"]');
+    const toolbar = compose.querySelector('[role="toolbar"]') || sendButton?.parentElement;
     if (!toolbar) return;
     const button = document.createElement('button');
     button.type = 'button';
@@ -63,11 +64,21 @@
     button.textContent = 'OnePWS';
     button.title = 'Open OnePWS campaign controls';
     button.addEventListener('click', () => togglePanel(compose));
-    toolbar.append(button);
+    if (sendButton && sendButton.parentElement === toolbar) toolbar.insertBefore(button, sendButton);
+    else toolbar.append(button);
+  }
+
+  function findComposeRoot(subject) {
+    let node = subject;
+    for (let level = 0; node && level < 12; level += 1, node = node.parentElement) {
+      if (node.matches?.('[role="dialog"]') || node.querySelector?.('[role="button"][aria-label^="Send"], [data-tooltip^="Send"]')) return node;
+    }
+    return null;
   }
 
   function scanComposers() {
-    document.querySelectorAll('[role="dialog"]').forEach(addComposeButton);
+    const roots = new Set([...document.querySelectorAll('[role="dialog"]'), ...[...document.querySelectorAll('input[name="subjectbox"]')].map(findComposeRoot).filter(Boolean)]);
+    roots.forEach(addComposeButton);
   }
 
   if (document.getElementById('onepws-launcher')) return;
@@ -89,4 +100,5 @@
   document.body.append(button);
   scanComposers();
   new MutationObserver(scanComposers).observe(document.documentElement, { childList: true, subtree: true });
+  window.setInterval(scanComposers, 1500);
 })();
