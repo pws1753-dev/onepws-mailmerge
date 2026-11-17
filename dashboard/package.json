@@ -1,0 +1,14 @@
+{
+  "name": "onepws-mailmerge-dashboard",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "mongodb": "^6.12.0"
+  }
+}

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>OnePWS · Mail Merge</title>
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="preload" href="assets/fonts/BeVietnamPro-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="app.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <svg class="svg-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3m1-17a3 3 0 0 1 0 6m3 11v-3a6 6 0 0 0-3-5"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 7 9 6 9-6"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="m21 3-7 18-4-7-7-4L21 3ZM10 14 21 3"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M5 3h14v18H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm-2 14h16M8 7h7M8 11h5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="8" cy="7" r="3"/><circle cx="16" cy="17" r="3"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8l-5-5Zm0 0v5h5M8 12h8M8 16h5"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  </defs></svg>
+  <aside class="sidebar">
+    <a class="brand" href="https://onepws.com" target="_blank" rel="noopener noreferrer"><img src="assets/logo.png" alt="OnePWS"></a>
+    <div class="workspace-label"><span class="workspace-avatar">O</span><div><strong>OnePWS workspace</strong><small>Personal mail studio</small></div><span class="workspace-dot"></span></div>
+    <p class="nav-caption">WORKSPACE</p>
+    <nav class="side-nav" aria-label="Workspace navigation">
+      <a href="#overview" class="nav-link active"><svg class="icon"><use href="#i-grid"/></svg>Campaign studio<span class="nav-count">01</span></a>
+      <a href="#contacts-panel" class="nav-link"><svg class="icon"><use href="#i-people"/></svg>Recipients</a>
+      <button id="templates-open" class="nav-link"><svg class="icon"><use href="#i-book"/></svg>My templates<span id="template-count" class="nav-count">0</span></button>
+      <a href="#activity-panel" class="nav-link"><svg class="icon"><use href="#i-send"/></svg>Delivery report</a>
+      <button id="dashboard-open" class="nav-link"><svg class="icon"><use href="#i-grid"/></svg>Dashboard sync</button>
+    </nav>
+    <p class="nav-caption second-caption">PREFERENCES</p>
+    <nav class="side-nav" aria-label="Preferences">
+      <button id="privacy-open" class="nav-link"><svg class="icon"><use href="#i-shield"/></svg>Privacy & data</button>
+      <button id="setup-open" class="nav-link"><svg class="icon"><use href="#i-settings"/></svg>Connection setup</button>
+    </nav>
+    <div class="sidebar-bottom"><div class="local-note"><svg class="icon"><use href="#i-shield"/></svg><strong>Your workspace. Your data.</strong><p>Stored in your Chrome profile.<br>Email sent directly through Google.</p></div><div class="sidebar-foot"><img src="assets/icon-32.png" alt=""><span>Built by OnePWS</span><span>v1.1</span></div></div>
+  </aside>
+  <div class="app-shell">
+    <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> <strong>Campaign studio</strong></div><div class="top-actions"><span id="save-status" class="save-status">All changes saved</span><button id="new-campaign" class="secondary"><svg class="icon"><use href="#i-plus"/></svg>New campaign</button></div></header>
+    <main id="overview">
+      <div class="heading"><div><p class="eyebrow"><span></span> ONEPWS MAIL MERGE</p><h1>A little more personal.<span> A lot more possible.</span></h1><p class="subtitle">Create, personalize, and send. All from one thoughtful workspace.</p></div><div class="heading-label"><svg class="icon"><use href="#i-mail"/></svg><span>Made for your inbox</span></div></div>
+      <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+      <section class="stats" aria-label="Campaign overview">
+        <div class="stat-card"><div><span class="stat-label">Recipients ready</span><strong id="stat-contacts">0</strong><small id="stat-contact-note">Import your contact list</small></div><span class="stat-icon red"><svg class="icon"><use href="#i-people"/></svg></span></div>
+        <div class="stat-card"><div><span class="stat-label">Emails sent</span><strong id="stat-sent">0</strong><small>In this campaign</small></div><span class="stat-icon green"><svg class="icon"><use href="#i-send"/></svg></span></div>
+        <div class="stat-card"><div><span class="stat-label">Pending delivery</span><strong id="stat-pending">0</strong><small id="stat-pending-note">Ready when you are</small></div><span class="stat-icon amber"><svg class="icon"><use href="#i-clock"/></svg></span></div>
+        <div class="stat-card"><div><span class="stat-label">Campaign status</span><strong id="stat-status" class="text-stat">Draft</strong><small id="stat-status-note">Make it your own</small></div><span class="stat-icon blue"><svg class="icon"><use href="#i-file"/></svg></span></div>
+      </section>
+      <section class="connection" aria-label="Gmail connection"><div class="google-icon" aria-hidden="true">G</div><div class="connection-copy"><div class="account-line"><strong id="account">Connect your Gmail</strong><span id="connection-badge" class="badge muted">Not connected</span></div><p id="account-detail">Connect the account you want to send from.</p></div><button id="connect" class="primary">Connect Gmail <svg class="icon"><use href="#i-arrow"/></svg></button><button id="disconnect" class="text-button" hidden>Disconnect</button></section>
+      <div class="studio-title"><div><h2>Your campaign</h2><p>Three simple steps. One personal connection.</p></div><label class="campaign-label" for="campaign-name">Campaign name<input id="campaign-name" maxlength="100" placeholder="Untitled campaign" aria-label="Campaign name"></label></div>
+      <div class="workspace">
+        <div class="editor">
+          <section id="contacts-panel" class="card">
+            <div class="section-heading"><span class="step">1</span><div><h2>Add your recipients</h2><p>Import a CSV and we’ll take care of the details.</p></div><button id="sample" class="text-button">Sample CSV ↓</button></div>
+            <label class="upload" id="upload-zone"><input id="csv-file" type="file" accept=".csv,text/csv" aria-label="Upload contacts CSV"><span class="upload-symbol"><svg class="icon"><use href="#i-upload"/></svg></span><strong>Click to upload <span>or drop your CSV here</span></strong><span>UTF-8 CSV · Include an email column</span></label>
+            <details id="paste-details"><summary>Or paste your contact data <span>⌄</span></summary><label for="csv" class="sr-only">Contact CSV data</label><textarea id="csv" rows="4" spellcheck="false" placeholder="Email,FirstName,Company&#10;alex@example.com,Alex,Example Co"></textarea></details>
+            <div class="inline import-controls"><div class="email-column"><label for="email-column">Email column</label><select id="email-column" disabled><option>Import a CSV first</option></select></div><button id="import" class="secondary">Import contacts</button></div>
+            <p id="contact-summary" class="helper">Duplicate emails are removed automatically. Invalid addresses are flagged.</p>
+            <div id="contact-table-wrap" class="contact-table-wrap" hidden><div class="table-toolbar"><span>Recipient overview</span><input id="contact-search" type="search" placeholder="Search recipients…" aria-label="Search recipients"></div><div class="table-scroll"><table><thead><tr><th>Email address</th><th>Personalization</th><th>Status</th></tr></thead><tbody id="contact-rows"></tbody></table></div><p id="contact-table-note" class="table-note"></p></div>
+          </section>
+          <section id="message-panel" class="card">
+            <div class="section-heading"><span class="step">2</span><div><h2>Make it personal</h2><p>One message, a personal touch for every recipient.</p></div><button id="template-save" class="text-button">Save template</button></div>
+            <label class="field-label">PERSONALIZATION FIELDS <span>Click to insert</span></label><div id="fields" class="fields" aria-label="Available merge fields"><span>Import contacts to unlock your merge fields.</span></div>
+            <label for="subject">Subject line <span id="subject-count" class="label-note">0 characters</span></label><input id="subject" type="text" placeholder="A quick hello, {{FirstName}}" maxlength="998">
+            <label for="body">Your message <span class="label-note">Plain text · Personal by design</span></label><textarea id="body" rows="10" placeholder="Hi {{FirstName}},&#10;&#10;I wanted to get in touch with you at {{Company}}.&#10;&#10;Best,&#10;Your name"></textarea><p class="editor-foot"><svg class="icon"><use href="#i-check"/></svg>One individual email per recipient. No shared recipient lists.</p>
+            <div class="sending-settings"><div><svg class="icon"><use href="#i-clock"/></svg><div><label for="delay">A comfortable sending pace</label><p>Seconds between emails. Gmail’s limits apply.</p></div></div><div class="delay-input"><input id="delay" type="number" min="1" max="300" value="3" aria-label="Seconds between emails"><span>sec</span></div></div>
+          </section>
+          <section id="activity-panel" class="card activity"><div class="section-heading"><span class="step neutral"><svg class="icon"><use href="#i-send"/></svg></span><div><h2>Every delivery, accounted for</h2><p>Live progress for your current campaign.</p></div><button id="export" class="text-button">Export report ↓</button></div><p id="progress">No campaign started.</p><progress id="progress-bar" value="0" max="1" aria-label="Campaign progress"></progress><div id="delivery-list" class="delivery-list"><div class="empty-activity">Your delivery activity will appear here.</div></div></section>
+        </div>
+        <aside class="preview-column">
+          <section class="card preview-card">
+            <div class="section-heading"><span class="step">3</span><div><h2>The final look</h2><p>Exactly what your recipient will read.</p></div><span class="live-tag"><span></span>LIVE PREVIEW</span></div>
+            <div class="recipient-selector"><label for="preview-contact">Preview as</label><select id="preview-contact" disabled><option>No contacts yet</option></select><div class="preview-nav"><button id="preview-prev" class="icon-button" aria-label="Previous recipient">‹</button><button id="preview-next" class="icon-button" aria-label="Next recipient">›</button></div></div>
+            <article class="email-preview"><div class="email-preview-top"><span class="sender-avatar" id="sender-avatar">O</span><div><strong id="preview-from">Your Gmail account</strong><div class="preview-meta">To: <span id="preview-to">Your recipient</span></div></div><span class="email-time">Preview</span></div><h3 id="preview-subject">Your next great conversation starts here.</h3><pre id="preview-body">Import your contacts and write a message. Your personalized preview will appear here.</pre><div class="email-preview-bottom"><span>OnePWS message preview</span><img src="assets/logo.png" alt="OnePWS"></div></article>
+            <div id="readiness" class="readiness" aria-label="Pre-send checklist"></div>
+            <div class="test-section"><label for="test-email">TRY IT IN YOUR OWN INBOX</label><div class="test-row"><input id="test-email" type="email" placeholder="you@example.com" aria-label="Test recipient email"><button id="test" class="secondary">Send test</button></div><p class="helper">A real test email, using the selected recipient’s details.</p></div>
+            <div class="send-area"><button id="review" class="primary full">Review campaign →</button><button id="pause" class="secondary full" hidden>Pause after current email</button><p class="helper"><svg class="icon"><use href="#i-shield"/></svg>You stay in control. Sending starts after your confirmation.</p><p class="tab-reminder">Keep this tab open while your campaign sends.</p></div>
+          </section>
+          <div class="privacy-strip"><svg class="icon"><use href="#i-shield"/></svg><div><strong>Personal messages. Private workspace.</strong><p>No tracking pixels. No inbox reading. No third-party mail servers.</p><button id="privacy-details" class="text-button">Manage your data →</button></div></div>
+        </aside>
+      </div>
+      <footer><span>© OnePWS · Make every connection count.</span><span>OnePWS Mail Merge <span class="footer-dot">·</span> Personal edition</span></footer>
+    </main>
+  </div>
+  <dialog id="review-dialog"><form method="dialog"><span class="eyebrow">ONE LAST LOOK</span><h2>Ready to make a connection?</h2><p id="review-summary"></p><div class="review-details"><p>Sender <strong id="review-sender"></strong></p><p>First subject <strong id="review-subject"></strong></p></div><p>Each recipient gets an individual email. Check the preview and send a test before launching.</p><div class="dialog-actions"><button class="secondary" value="cancel">Back to editing</button><button id="confirm-send" class="primary" type="button">Send emails</button></div></form></dialog>
+  <dialog id="templates-dialog"><div class="dialog-heading"><div><p class="eyebrow">YOUR MESSAGE LIBRARY</p><h2>Good words, ready to reuse.</h2></div><button class="icon-button dialog-close" data-close="templates-dialog" aria-label="Close templates">×</button></div><p>Save your subject and message as a template. Contacts and account details are never included.</p><div id="template-list" class="template-list"></div></dialog>
+  <dialog id="template-save-dialog"><form id="template-form"><span class="eyebrow">SAVE FOR NEXT TIME</span><h2>Give your template a name.</h2><label for="template-name">Template name</label><input id="template-name" maxlength="80" placeholder="For example, a warm introduction" required><p>Your subject and message will be saved locally in this Chrome profile.</p><div class="dialog-actions"><button type="button" class="secondary" data-close="template-save-dialog">Cancel</button><button type="submit" class="primary">Save template</button></div></form></dialog>
+  <dialog id="dashboard-dialog"><div class="dialog-heading"><div><p class="eyebrow">PRIVATE DASHBOARD SYNC</p><h2>Connect campaign reporting.</h2></div><button class="icon-button dialog-close" data-close="dashboard-dialog" aria-label="Close dashboard settings">×</button></div><p>Optional. Syncs campaign name, sender, recipient count, and send outcome to your OnePWS dashboard. It never uploads your CSV, email body, subject, or Gmail access token.</p><label for="dashboard-url">Dashboard URL</label><input id="dashboard-url" type="url" value="https://mailmerge.onepws.com" maxlength="200"><label for="dashboard-device-id">Device ID</label><input id="dashboard-device-id" autocomplete="off" maxlength="100" placeholder="dev_…"><label for="dashboard-device-secret">Device secret</label><input id="dashboard-device-secret" type="password" autocomplete="new-password" maxlength="200" placeholder="Paste once from dashboard pairing"><p id="dashboard-status" class="helper">Pair a device in the dashboard, then paste its credential here.</p><div class="dialog-actions"><button id="dashboard-disconnect" class="secondary" type="button">Disconnect</button><button id="dashboard-save" class="primary" type="button">Save connection</button></div></dialog>
+  <dialog id="privacy-dialog"><div class="dialog-heading"><div><p class="eyebrow">PRIVACY & DATA</p><h2>A workspace you control.</h2></div><button class="icon-button dialog-close" data-close="privacy-dialog" aria-label="Close privacy settings">×</button></div><div class="privacy-facts"><p><svg class="icon"><use href="#i-shield"/></svg>Gmail send permission and your account email only. We do not request inbox reading.</p><p><svg class="icon"><use href="#i-check"/></svg>Contacts and message content go directly to Google when you send. No analytics or remote fonts.</p></div><label class="toggle-row"><div><strong>Remember my workspace</strong><small>Save contacts, drafts, and campaign progress across browser restarts.</small></div><input id="remember-workspace" type="checkbox" checked></label><p class="helper">When off, this workspace is kept in browser session memory and cleared when Chrome exits or the extension reloads. Delivery receipts and saved templates remain local until cleared. Local storage is not encrypted by this extension; use a trusted Chrome profile.</p><div class="data-controls"><h3>Clear saved data</h3><p>Remove this workspace, saved templates, and delivery receipts, and disconnect Gmail. Previously sent emails remain in Gmail. Clearing receipts removes duplicate-send protection for old campaigns.</p><button id="clear-data" class="danger-button">Clear data & disconnect</button></div><p class="helper">To revoke access at Google too, remove this app from <a href="https://myaccount.google.com/connections" target="_blank" rel="noopener noreferrer">your Google account connections</a>.</p></dialog>
+  <dialog id="setup-dialog"><div class="dialog-heading"><div><span class="eyebrow">CONNECTION SETUP</span><h2>Your account, connected.</h2></div><button id="setup-close" class="icon-button" aria-label="Close setup guide">×</button></div><p>Your extension ID: <code id="extension-id"></code></p><ol><li>Enable the Gmail API in your <a href="https://console.cloud.google.com/apis/library/gmail.googleapis.com" target="_blank" rel="noopener noreferrer">Google Cloud project</a>.</li><li>Set up Google Auth Platform branding and audience. Testing apps require approved test users; production publication and verification are separate steps.</li><li>Create a <strong>Chrome Extension</strong> OAuth client using the extension ID above.</li><li>Run <code>node scripts/configure.mjs YOUR_CLIENT_ID.apps.googleusercontent.com</code> from the extension folder.</li><li>Reload the extension at <strong>chrome://extensions</strong>, reopen OnePWS, and choose <strong>Connect Gmail</strong>.</li></ol><p class="helper">See README.md for full instructions. No client secret or separate mail server is needed.</p></dialog>
+</body>
+</html>

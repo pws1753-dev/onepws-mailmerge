@@ -1,0 +1,28 @@
+/* OnePWS launcher */
+@font-face {
+  font-family: 'OnePWS Be Vietnam Pro';
+  src: url('chrome-extension://__MSG_@@extension_id__/assets/fonts/BeVietnamPro-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+#onepws-launcher {
+  position: fixed;
+  right: 28px;
+  bottom: 26px;
+  z-index: 2147483000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 17px 10px 12px;
+  border: 1px solid #e5d5d5;
+  border-radius: 30px;
+  background: #fff;
+  color: #202126;
+  box-shadow: 0 4px 20px #20212620;
+  font: 500 14px/1.2 'OnePWS Be Vietnam Pro', sans-serif;
+  cursor: pointer;
+}
+#onepws-launcher:hover { background: #fff4f4; border-color: #d9252b; }
+#onepws-launcher:focus-visible { outline: 3px solid #d9252b; outline-offset: 3px; }
+#onepws-launcher img { display: block; width: 23px; height: 23px; }

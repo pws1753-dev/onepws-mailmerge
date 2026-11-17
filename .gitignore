@@ -1,0 +1,6 @@
+.env
+dashboard/.env
+node_modules/
+dashboard/node_modules/
+*.log
+

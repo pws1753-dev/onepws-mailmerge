@@ -1,0 +1,7 @@
+{
+  "name": "onepws-mail-merge",
+  "private": true,
+  "version": "1.1.0",
+  "type": "module",
+  "scripts": {"test": "node --test tests/*.test.js", "configure": "node scripts/configure.mjs", "check": "node scripts/check.mjs"}
+}
