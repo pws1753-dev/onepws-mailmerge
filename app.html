@@ -61,7 +61,7 @@
       <div class="workspace">
         <div class="editor">
           <section id="contacts-panel" class="card">
-            <div class="section-heading"><span class="step">1</span><div><h2>Add your recipients</h2><p>Import a CSV or connect a Google Sheet.</p></div><div class="section-actions"><button id="sheets-open" class="text-button">Google Sheets</button><button id="sample" class="text-button">Sample CSV ↓</button></div></div>
+            <div class="section-heading"><span class="step">1</span><div><h2>Add your recipients</h2><p>Import a CSV or connect a Google Sheet.</p></div><div class="section-actions"><button id="sheets-open" class="secondary sheets-button">Connect Google Sheet</button><button id="sample" class="text-button">Sample CSV ↓</button></div></div>
             <label class="upload" id="upload-zone"><input id="csv-file" type="file" accept=".csv,text/csv" aria-label="Upload contacts CSV"><span class="upload-symbol"><svg class="icon"><use href="#i-upload"/></svg></span><strong>Click to upload <span>or drop your CSV here</span></strong><span>UTF-8 CSV · Include an email column</span></label>
             <details id="paste-details"><summary>Or paste your contact data <span>⌄</span></summary><label for="csv" class="sr-only">Contact CSV data</label><textarea id="csv" rows="4" spellcheck="false" placeholder="Email,FirstName,Company&#10;alex@example.com,Alex,Example Co"></textarea></details>
             <div class="inline import-controls"><div class="email-column"><label for="email-column">Email column</label><select id="email-column" disabled><option>Import a CSV first</option></select></div><button id="import" class="secondary">Import contacts</button></div>
