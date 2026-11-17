@@ -18,6 +18,18 @@ async function openWorkspace() {
   } else await chrome.tabs.create({ url });
 }
 
+function isGmailPage(sender) { return typeof sender?.url === 'string' && sender.url.startsWith('https://mail.google.com/'); }
+
+async function importGmailDraft(message, sender) {
+  if (!isGmailPage(sender)) throw new Error('Gmail compose import is only available inside Gmail.');
+  const subject = String(message.draft?.subject || '').replace(/[\r\n]+/g, ' ').slice(0, 998);
+  const body = String(message.draft?.body || '').slice(0, 100000);
+  if (!subject && !body) throw new Error('Write a subject or message in Gmail before opening OnePWS.');
+  await chrome.storage.session.set({ gmailComposeDraft: { subject, body, importedAt: new Date().toISOString() } });
+  await openWorkspace();
+  return {};
+}
+
 chrome.action.onClicked.addListener(openWorkspace);
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   await storageReady;
@@ -189,11 +201,17 @@ async function route(message, sender) {
   await storageReady;
   if (!message || typeof message.type !== 'string') throw new Error('Invalid OnePWS request.');
   if (message.type === 'OPEN_WORKSPACE') return openWorkspace();
+  if (message.type === 'IMPORT_GMAIL_DRAFT') return importGmailDraft(message, sender);
   // Gmail content scripts may launch the workspace, but cannot connect or send.
   if (sender.url !== chrome.runtime.getURL('app.html')) throw new Error('Open the OnePWS workspace to perform this action.');
   if (message.type === 'STATUS') {
     const { connectedEmail } = await chrome.storage.session.get('connectedEmail');
     return { configured: configured(), email: connectedEmail || '' };
+  }
+  if (message.type === 'GMAIL_COMPOSE_DRAFT') {
+    const { gmailComposeDraft } = await chrome.storage.session.get('gmailComposeDraft');
+    await chrome.storage.session.remove('gmailComposeDraft');
+    return { draft: gmailComposeDraft || null };
   }
   if (message.type === 'DASHBOARD_STATUS') { const config = await dashboardConfig(); return { connected: validDashboard(config), url: config?.url || DASHBOARD_DEFAULT, deviceId: config?.deviceId || '' }; }
   if (message.type === 'DASHBOARD_CONNECT') {

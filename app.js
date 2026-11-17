@@ -344,6 +344,13 @@ async function init() {
     }
   }
   const status = await api('STATUS'); email = status.email;
+  const gmailDraft = await api('GMAIL_COMPOSE_DRAFT');
+  if (gmailDraft.draft && !campaign) {
+    $('subject').value = gmailDraft.draft.subject;
+    $('body').value = gmailDraft.draft.body;
+    notice('Gmail compose draft loaded. Add recipients, preview, then review the campaign.', true);
+    await save();
+  }
   if (!status.configured) notice('One-time setup needed: add your Google OAuth client ID. Open the setup guide to get started.');
   $('extension-id').textContent = chrome.runtime.id;
   accountUI(); renderProgress();

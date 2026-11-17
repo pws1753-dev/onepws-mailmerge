@@ -26,3 +26,6 @@
 #onepws-launcher:hover { background: #fff4f4; border-color: #d9252b; }
 #onepws-launcher:focus-visible { outline: 3px solid #d9252b; outline-offset: 3px; }
 #onepws-launcher img { display: block; width: 23px; height: 23px; }
+.onepws-compose-button { margin-left: 8px; min-height: 32px; padding: 0 12px; border: 0; border-radius: 5px; background: #d9343e; color: #fff; font: 600 12px/1.2 'OnePWS Be Vietnam Pro', Arial, sans-serif; cursor: pointer; }
+.onepws-compose-button:hover { background: #bd2630; }
+.onepws-compose-button:focus-visible { outline: 3px solid #d9252b; outline-offset: 2px; }
