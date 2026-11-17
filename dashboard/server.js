@@ -12,7 +12,10 @@ const config = { ...parseEnv(envFile), ...process.env };
 const production = config.NODE_ENV === 'production';
 const store = new DashboardStore(config.MONGODB_URI, config.MONGODB_DB || 'onepws_mailmerge');
 let databaseReady = false;
-try { databaseReady = await store.connect(); console.log('[OnePWS] MongoDB Atlas connected.'); } catch (error) { console.warn('[OnePWS] Database unavailable; dashboard is using volatile local memory.'); }
+async function connectDatabase() {
+  try { databaseReady = await store.connect(); console.log('[OnePWS] MongoDB Atlas connected.'); }
+  catch { console.warn('[OnePWS] Database unavailable; dashboard is using volatile local memory.'); }
+}
 
 const securityHeaders = {
   'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY', 'Referrer-Policy': 'strict-origin-when-cross-origin',
@@ -80,5 +83,8 @@ const app = http.createServer(async (req, res) => {
 });
 
 const port = Number(config.PORT || 3000);
-app.listen(port, () => console.log(`[OnePWS] Dashboard listening on port ${port}`));
+app.listen(port, '0.0.0.0', () => {
+  console.log(`[OnePWS] Dashboard listening on port ${port}`);
+  void connectDatabase();
+});
 for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, async () => { await store.close(); process.exit(0); });
