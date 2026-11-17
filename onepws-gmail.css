@@ -29,3 +29,24 @@
 .onepws-compose-button { margin-left: 8px; min-height: 32px; padding: 0 12px; border: 0; border-radius: 5px; background: #d9343e; color: #fff; font: 600 12px/1.2 'OnePWS Be Vietnam Pro', Arial, sans-serif; cursor: pointer; }
 .onepws-compose-button:hover { background: #bd2630; }
 .onepws-compose-button:focus-visible { outline: 3px solid #d9252b; outline-offset: 2px; }
+.onepws-gmail-panel { position: absolute; z-index: 2147483000; right: 8px; bottom: 54px; width: min(360px, calc(100vw - 32px)); max-height: min(610px, calc(100vh - 120px)); overflow: auto; box-sizing: border-box; border: 1px solid #d9dfea; border-radius: 12px; background: #fff; color: #16233e; box-shadow: 0 16px 42px #15223d38; font: 500 13px/1.45 'OnePWS Be Vietnam Pro', Arial, sans-serif; }
+.onepws-gmail-panel[hidden] { display: none; }
+.onepws-panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 17px 18px 14px; color: #fff; background: #172743; border-radius: 11px 11px 0 0; }
+.onepws-panel-header strong { display: block; margin-top: 2px; font-size: 18px; line-height: 1.15; }
+.onepws-panel-kicker, .onepws-panel-label { display: block; color: #ff5962; font-size: 9px; font-weight: 700; letter-spacing: .17em; }
+.onepws-panel-close { width: 28px; height: 28px; padding: 0; border: 1px solid #6d7890; border-radius: 7px; background: transparent; color: #fff; font-size: 21px; line-height: 1; cursor: pointer; }
+.onepws-panel-body { padding: 14px; }
+.onepws-panel-card { margin: 0 0 10px; padding: 13px; border: 1px solid #e1e6ef; border-radius: 9px; background: #fff; }
+.onepws-draft-card { background: #fbfcff; }
+.onepws-panel-subject { display: block; margin-top: 4px; overflow: hidden; color: #172743; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.onepws-panel-message, .onepws-panel-card p, .onepws-panel-details p { margin: 6px 0 0; color: #62718c; font-size: 12px; }
+.onepws-panel-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #172743; }
+.onepws-panel-title span { display: inline-grid; width: 22px; height: 22px; place-items: center; border-radius: 50%; background: #fff0f1; color: #d9343e; font-size: 10px; font-weight: 700; }
+.onepws-open-workspace { width: 100%; margin-top: 12px; min-height: 36px; border: 0; border-radius: 7px; background: #d9343e; color: #fff; font: 700 12px/1 'OnePWS Be Vietnam Pro', Arial, sans-serif; cursor: pointer; }
+.onepws-open-workspace:hover { background: #bd2630; }
+.onepws-open-workspace:disabled { opacity: .7; cursor: wait; }
+.onepws-panel-list { display: grid; gap: 5px; margin: 9px 0 0; padding: 0; color: #566682; font-size: 11px; list-style: none; }
+.onepws-panel-list li::before { content: '✓'; margin-right: 7px; color: #1b9b73; font-weight: 700; }
+.onepws-panel-details { padding: 12px 3px; border-top: 1px solid #e6e9f0; border-bottom: 1px solid #e6e9f0; color: #172743; }
+.onepws-panel-details summary { cursor: pointer; font-weight: 700; }
+.onepws-panel-status { margin: 11px 2px 1px; color: #7987a0; font-size: 10px; }
