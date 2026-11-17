@@ -1,8 +1,8 @@
-import crypto from 'node:crypto';
-import { MongoClient } from 'mongodb';
-import { metricsFromEvents, now } from './lib.js';
+const crypto = require('node:crypto');
+const { MongoClient } = require('mongodb');
+const { metricsFromEvents, now } = require('./lib.js');
 
-export class DashboardStore {
+class DashboardStore {
   constructor(uri, database = 'onepws_mailmerge') {
     this.uri = uri;
     this.databaseName = database;
@@ -50,3 +50,5 @@ export class DashboardStore {
     return { source: this.db ? 'MongoDB Atlas' : 'local development memory', totals, campaigns: rows, events: events.slice(0, 40).map(({ _id, ...event }) => event) };
   }
 }
+
+module.exports = { DashboardStore };

@@ -1,4 +1,3 @@
-// Hostinger's default Node.js entry filename is app.js.
-// Keep this tiny bridge so the dashboard works whether the panel uses app.js
-// or the documented server.js entry file.
-import './server.js';
+// Hostinger's LiteSpeed runner loads this file through require(), so it must
+// remain CommonJS and must not use a top-level await.
+require('./server.js');

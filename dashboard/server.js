@@ -1,13 +1,13 @@
-import crypto from 'node:crypto';
-import fs from 'node:fs/promises';
-import http from 'node:http';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { createSession, parseEnv, safeEqual, sign, validateEvent, verifySession } from './lib.js';
-import { DashboardStore } from './store.js';
+const fs = require('node:fs');
+const fsp = require('node:fs/promises');
+const http = require('node:http');
+const path = require('node:path');
+const { createSession, parseEnv, safeEqual, sign, validateEvent, verifySession } = require('./lib.js');
+const { DashboardStore } = require('./store.js');
 
-const here = path.dirname(fileURLToPath(import.meta.url));
-const envFile = await fs.readFile(path.join(here, '.env'), 'utf8').catch(() => '');
+const here = __dirname;
+let envFile = '';
+try { envFile = fs.readFileSync(path.join(here, '.env'), 'utf8'); } catch { /* Hostinger injects environment variables directly. */ }
 const config = { ...parseEnv(envFile), ...process.env };
 const production = config.NODE_ENV === 'production';
 const store = new DashboardStore(config.MONGODB_URI, config.MONGODB_DB || 'onepws_mailmerge');
@@ -42,7 +42,7 @@ async function servePublic(res, requested) {
   const absolute = path.resolve(here, 'public', file);
   if (!absolute.startsWith(path.join(here, 'public'))) return text(res, 403, 'Forbidden');
   const type = absolute.endsWith('.html') ? 'text/html; charset=utf-8' : absolute.endsWith('.css') ? 'text/css; charset=utf-8' : absolute.endsWith('.js') ? 'application/javascript; charset=utf-8' : absolute.endsWith('.woff2') ? 'font/woff2' : 'application/octet-stream';
-  try { text(res, 200, await fs.readFile(absolute), type); } catch { text(res, 404, 'Not found'); }
+  try { text(res, 200, await fsp.readFile(absolute), type); } catch { text(res, 404, 'Not found'); }
 }
 
 const app = http.createServer(async (req, res) => {

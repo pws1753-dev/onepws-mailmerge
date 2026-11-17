@@ -1,6 +1,6 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import { createSession, metricsFromEvents, validateEvent, verifySession } from '../lib.js';
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const { createSession, metricsFromEvents, validateEvent, verifySession } = require('../lib.js');
 
 test('session token verifies only with its secret', () => { const token = createSession('correct-secret'); assert.ok(verifySession(token, 'correct-secret')); assert.equal(verifySession(token, 'wrong-secret'), false); });
 test('metrics count campaign events without making a negative queue', () => { const [campaign] = metricsFromEvents([{ id: 'campaign_123', recipients: 1 }], [{ campaignId: 'campaign_123', type: 'sent' }, { campaignId: 'campaign_123', type: 'sent' }, { campaignId: 'campaign_123', type: 'bounced' }]); assert.equal(campaign.sent, 2); assert.equal(campaign.pending, 0); assert.equal(campaign.bounced, 1); });
