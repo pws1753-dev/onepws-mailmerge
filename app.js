@@ -414,8 +414,23 @@ async function loadFile(file) {
 function setupExtras() {
   renderTemplates();
   $('templates-open').onclick = () => { renderTemplates(); $('templates-dialog').showModal(); };
-  $('sheets-open').onclick = () => { if (campaign || running) return notice('Start a new campaign before changing recipients.'); $('sheets-dialog').showModal(); };
-  $('sheets-import').onclick = guarded(importGoogleSheet);
+  $('sheets-open').onclick = () => {
+    if (campaign || running) return notice('Start a new campaign before changing recipients.');
+    $('sheets-status').hidden = true;
+    $('sheets-status').textContent = '';
+    $('sheets-dialog').showModal();
+  };
+  $('sheets-import').onclick = async () => {
+    const button = $('sheets-import');
+    const status = $('sheets-status');
+    button.disabled = true;
+    status.hidden = false;
+    status.className = 'sheets-status loading';
+    status.textContent = 'Requesting access to your Google Sheet…';
+    try { await importGoogleSheet(); }
+    catch (error) { status.className = 'sheets-status'; status.textContent = error.message || 'Could not import this sheet.'; }
+    finally { button.disabled = false; }
+  };
   $('dashboard-open').onclick = guarded(async () => {
     const status = await api('DASHBOARD_STATUS');
     $('dashboard-url').value = status.url;
