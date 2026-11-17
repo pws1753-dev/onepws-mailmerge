@@ -9,10 +9,10 @@ const manifest = JSON.parse(readFileSync(join(root, 'manifest.json'), 'utf8'));
 assert.equal(manifest.manifest_version, 3);
 assert.equal(manifest.name, 'OnePWS Mail Merge');
 assert.deepEqual(manifest.permissions, ['identity', 'storage']);
-assert.deepEqual(manifest.oauth2.scopes.sort(), ['https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/userinfo.email'].sort());
-assert.deepEqual(manifest.host_permissions.sort(), ['https://gmail.googleapis.com/*', 'https://www.googleapis.com/*', 'https://mailmerge.onepws.com/*'].sort());
+assert.deepEqual(manifest.oauth2.scopes.sort(), ['https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/spreadsheets.readonly'].sort());
+assert.deepEqual(manifest.host_permissions.sort(), ['https://gmail.googleapis.com/*', 'https://www.googleapis.com/*', 'https://sheets.googleapis.com/*', 'https://mailmerge.onepws.com/*'].sort());
 assert.ok(manifest.content_security_policy.extension_pages.includes("font-src 'self'"));
-assert.ok(manifest.content_security_policy.extension_pages.includes('connect-src https://gmail.googleapis.com https://www.googleapis.com https://mailmerge.onepws.com;'));
+assert.ok(manifest.content_security_policy.extension_pages.includes('connect-src https://gmail.googleapis.com https://www.googleapis.com https://sheets.googleapis.com https://mailmerge.onepws.com;'));
 for (const weight of ['Regular', 'Medium', 'SemiBold', 'Bold']) {
   const font = readFileSync(join(root, `assets/fonts/BeVietnamPro-${weight}.ttf`));
   assert.equal(font.readUInt32BE(0), 0x00010000, 'Bundled font must be a TrueType file.');

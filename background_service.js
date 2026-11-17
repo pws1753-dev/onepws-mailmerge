@@ -144,6 +144,26 @@ async function dashboardSync(data) {
   return { connected: true };
 }
 
+function spreadsheetId(value) {
+  const match = String(value || '').match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]{20,})/);
+  if (!match) throw new Error('Paste a valid Google Sheets URL.');
+  return match[1];
+}
+
+async function importSheet(message) {
+  if (busy) throw new Error('Wait for the current delivery before importing a sheet.');
+  const id = spreadsheetId(message.url);
+  const range = String(message.range || '').trim();
+  if (!range || range.length > 180 || !/^[\w .!:'-]+$/u.test(range)) throw new Error('Enter a valid sheet range, for example Leads!A:Z.');
+  const { token } = await verifiedAccount(true);
+  const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${id}/values/${encodeURIComponent(range)}`, { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(20000) });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(result.error?.message || 'Google Sheets could not read that range. Check sharing access and the tab name.');
+  if (!Array.isArray(result.values) || result.values.length < 2 || !Array.isArray(result.values[0])) throw new Error('The selected range needs a header row and at least one recipient row.');
+  if (result.values.length > 10001) throw new Error('Import up to 10,000 rows at a time. Split larger sheets into ranges.');
+  return { values: result.values.map(row => Array.isArray(row) ? row.map(cell => String(cell ?? '')) : []) };
+}
+
 async function route(message, sender) {
   await storageReady;
   if (!message || typeof message.type !== 'string') throw new Error('Invalid OnePWS request.');
@@ -162,6 +182,7 @@ async function route(message, sender) {
   }
   if (message.type === 'DASHBOARD_DISCONNECT') { await chrome.storage.local.remove('dashboardConnection'); return {}; }
   if (message.type === 'DASHBOARD_SYNC') return dashboardSync(message.data);
+  if (message.type === 'SHEETS_IMPORT') return importSheet(message);
   if (message.type === 'CONNECT') return connect();
   if (message.type === 'DISCONNECT') {
     if (busy) throw new Error('Wait for the current delivery to finish before disconnecting.');

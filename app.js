@@ -178,6 +178,15 @@ async function importAndSave() {
   await save();
 }
 
+async function importGoogleSheet() {
+  if (campaign || running || !editable || loadingContacts) throw new Error('Start a new campaign before changing recipients.');
+  const data = await api('SHEETS_IMPORT', { url: $('sheet-url').value, range: $('sheet-range').value });
+  $('csv').value = exportCSV(data.values);
+  await importAndSave();
+  $('sheets-dialog').close();
+  notice(`Imported ${Math.max(0, data.values.length - 1)} rows from Google Sheets. Review recipients before sending.`, true);
+}
+
 function renderProgress() {
   const items = campaign?.items || [];
   const sent = items.filter(item => item.status === 'sent').length;
@@ -405,6 +414,8 @@ async function loadFile(file) {
 function setupExtras() {
   renderTemplates();
   $('templates-open').onclick = () => { renderTemplates(); $('templates-dialog').showModal(); };
+  $('sheets-open').onclick = () => { if (campaign || running) return notice('Start a new campaign before changing recipients.'); $('sheets-dialog').showModal(); };
+  $('sheets-import').onclick = guarded(importGoogleSheet);
   $('dashboard-open').onclick = guarded(async () => {
     const status = await api('DASHBOARD_STATUS');
     $('dashboard-url').value = status.url;

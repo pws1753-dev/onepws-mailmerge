@@ -12,13 +12,15 @@
   "host_permissions": [
     "https://gmail.googleapis.com/*",
     "https://www.googleapis.com/*",
+    "https://sheets.googleapis.com/*",
     "https://mailmerge.onepws.com/*"
   ],
   "oauth2": {
     "client_id": "451076729897-7n743ad7qonka3lvecbti49ggggafv6u.apps.googleusercontent.com",
     "scopes": [
       "https://www.googleapis.com/auth/gmail.send",
-      "https://www.googleapis.com/auth/userinfo.email"
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/spreadsheets.readonly"
     ]
   },
   "background": {
@@ -63,7 +65,7 @@
     }
   ],
   "content_security_policy": {
-    "extension_pages": "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src https://gmail.googleapis.com https://www.googleapis.com https://mailmerge.onepws.com; object-src 'none'; base-uri 'none'; form-action 'none'"
+    "extension_pages": "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src https://gmail.googleapis.com https://www.googleapis.com https://sheets.googleapis.com https://mailmerge.onepws.com; object-src 'none'; base-uri 'none'; form-action 'none'"
   },
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhuQna+bP0dCtyawqPFdp3tYpBX7BqZv3Hfri4X3QGy7w0s1QFv3C+Lq4VuWjEkUMyGuIggj9cVVYQJgKE64rkQjUKhoP3ajkPLjMLjPNdRqdpYkvyvKOdjbLPsonMRTIrF1ZEI1oFEpG3j4UyiuHX1Yq0q7NHkeATSgHVlqOYZj9OkrV55ahQViuTtR9R5o7A+69p92CeDfgnCv5fz0ugJD4fgE1VB8l+ThOHCerxdnrL6d+HjY+cyeF1xukBpjqamtXAxq+9WZd6jObl48Unui04pvucw229FepM7fOWskOkLj6EkOPuWuyA/mjGVCYwgK1Mri0q2CaWEjW1MHNDwIDAQAB"
 }
