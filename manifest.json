@@ -19,6 +19,7 @@
     "client_id": "451076729897-7n743ad7qonka3lvecbti49ggggafv6u.apps.googleusercontent.com",
     "scopes": [
       "https://www.googleapis.com/auth/gmail.send",
+      "https://www.googleapis.com/auth/gmail.readonly",
       "https://www.googleapis.com/auth/userinfo.email",
       "https://www.googleapis.com/auth/spreadsheets.readonly"
     ]

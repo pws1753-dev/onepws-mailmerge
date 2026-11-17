@@ -73,13 +73,14 @@ function renderOverview() {
   const sent = items.filter(item => item.status === 'sent').length;
   const pending = items.filter(item => ['pending', 'failed'].includes(item.status)).length;
   const unknown = items.some(item => ['sending', 'unknown'].includes(item.status));
+  const replied = items.filter(item => item.repliedAt).length;
   $('stat-contacts').textContent = contacts.length.toLocaleString();
   $('stat-contact-note').textContent = invalid.length ? `${invalid.length} invalid addresses to fix` : contacts.length ? 'Unique, validated recipients' : 'Import your contact list';
   $('stat-sent').textContent = sent.toLocaleString();
   $('stat-pending').textContent = pending.toLocaleString();
   $('stat-pending-note').textContent = campaign ? `${campaign.delay}s between deliveries` : 'Ready when you are';
   $('stat-status').textContent = running ? 'Sending' : !campaign ? 'Draft' : sent === items.length ? 'Complete' : 'Paused';
-  $('stat-status-note').textContent = unknown ? 'Check unconfirmed deliveries' : campaign ? 'Progress saved as you go' : 'Make it your own';
+  $('stat-status-note').textContent = unknown ? 'Check unconfirmed deliveries' : replied ? `${replied} reply${replied === 1 ? '' : 'ies'} detected` : campaign ? 'Progress saved as you go' : 'Make it your own';
 }
 
 function proofKey() { return JSON.stringify([email, $('csv').value, $('email-column').value, $('subject').value, $('body').value]); }
@@ -193,18 +194,34 @@ function renderProgress() {
   const failed = items.filter(item => item.status === 'failed').length;
   const unknown = items.filter(item => item.status === 'unknown' || item.status === 'sending').length;
   const pending = items.filter(item => item.status === 'pending').length;
-  $('progress').textContent = campaign ? `${sent} of ${items.length} sent · ${pending} pending · ${failed} failed · ${unknown} unconfirmed` : 'No campaign started.';
+  const replied = items.filter(item => item.repliedAt).length;
+  $('progress').textContent = campaign ? `${sent} of ${items.length} sent · ${pending} pending · ${failed} failed · ${replied} replied · ${unknown} unconfirmed` : 'No campaign started.';
   $('progress-bar').max = items.length || 1;
   $('progress-bar').value = sent;
   $('delivery-list').replaceChildren(...items.filter(item => item.status !== 'pending').map(item => {
     const row = document.createElement('div'); row.className = 'delivery';
     const address = document.createElement('span'); address.textContent = item.to;
-    const status = document.createElement('span'); status.className = item.status; status.textContent = item.status;
+    const status = document.createElement('span'); status.className = item.status; status.textContent = item.repliedAt ? 'replied' : item.status;
     row.append(address, status);
     if (item.error) { const error = document.createElement('small'); error.textContent = item.error; row.append(error); }
     return row;
   }));
   controls();
+}
+
+async function checkReplies() {
+  if (!campaign) throw new Error('Start a campaign before checking replies.');
+  const candidates = campaign.items.filter(item => item.status === 'sent' && item.threadId && item.messageId);
+  if (!candidates.length) throw new Error('No sent campaign threads are available yet. New sends will include reply detection automatically.');
+  const result = await api('CHECK_REPLIES', { from: campaign.from, items: candidates });
+  for (const reply of result.replied) {
+    const item = campaign.items.find(candidate => candidate.id === reply.id);
+    if (!item || item.repliedAt) continue;
+    item.repliedAt = reply.at;
+    await syncDashboard({ ...item, status: 'replied', at: reply.at });
+  }
+  await save(); renderProgress();
+  notice(result.replied.length ? `${result.replied.length} reply${result.replied.length === 1 ? '' : 'ies'} detected.` : `Checked ${result.checked} sent thread${result.checked === 1 ? '' : 's'} — no new replies.`, true);
 }
 
 function buildCampaign() {
@@ -223,7 +240,9 @@ function buildCampaign() {
 async function syncDashboard(item) {
   if (!campaign?.id) return;
   try {
-    await api('DASHBOARD_SYNC', { data: { campaign: { id: campaign.id, name: campaign.name, sender: campaign.from, recipients: campaign.items.length, status: running ? 'sending' : 'paused', createdAt: campaign.created }, event: { eventId: `event_${item.id}_${item.status}`, campaignId: campaign.id, type: item.status === 'sent' ? 'sent' : item.status === 'failed' ? 'failed' : 'queued', email: item.to, detail: item.status === 'sent' ? 'Sent from OnePWS Chrome extension.' : 'Delivery was not confirmed.', createdAt: item.at || new Date().toISOString() } } });
+    const type = ['sent', 'failed', 'replied'].includes(item.status) ? item.status : 'queued';
+    const detail = type === 'sent' ? 'Sent from OnePWS Chrome extension.' : type === 'replied' ? 'Reply detected in the Gmail campaign thread.' : 'Delivery was not confirmed.';
+    await api('DASHBOARD_SYNC', { data: { campaign: { id: campaign.id, name: campaign.name, sender: campaign.from, recipients: campaign.items.length, status: running ? 'sending' : 'paused', createdAt: campaign.created }, event: { eventId: `event_${item.id}_${item.status}`, campaignId: campaign.id, type, email: item.to, detail, createdAt: item.at || new Date().toISOString() } } });
   } catch (error) { console.warn('OnePWS dashboard sync:', error.message); }
 }
 
@@ -354,10 +373,11 @@ async function init() {
   $('review').onclick = guarded(review);
   $('confirm-send').onclick = guarded(runCampaign);
   $('test').onclick = guarded(sendTest);
+  $('check-replies').onclick = guarded(checkReplies);
   $('pause').onclick = () => { pauseRequested = true; $('pause').textContent = 'Pausing…'; };
   $('export').onclick = guarded(() => {
     if (!campaign) throw new Error('Start a campaign to create a delivery report.');
-    download('onepws-delivery-report.csv', exportCSV([['Email', 'Status', 'Message ID', 'Time', 'Error'], ...campaign.items.map(item => [item.to, item.status, item.messageId, item.at, item.error])]));
+    download('onepws-delivery-report.csv', exportCSV([['Email', 'Status', 'Message ID', 'Time', 'Reply time', 'Error'], ...campaign.items.map(item => [item.to, item.repliedAt ? 'replied' : item.status, item.messageId, item.at, item.repliedAt, item.error])]));
   });
   $('new-campaign').onclick = guarded(async () => {
     if ((campaign || $('subject').value || $('body').value || $('csv').value) && !confirm('Start a fresh campaign? Export the current report and save your message as a template first. Previously sent recipients can be emailed again in a new campaign.')) return;

@@ -113,7 +113,7 @@ async function send(message) {
       return record;
     }
     if (!result.id) throw new Error('Gmail did not confirm delivery. Check your Sent folder.');
-    const record = { status: 'sent', fingerprint, messageId: result.id, at: new Date().toISOString() };
+    const record = { status: 'sent', fingerprint, messageId: result.id, threadId: result.threadId || '', at: new Date().toISOString() };
     await chrome.storage.local.set({ [receiptKey]: record });
     return record;
   } catch (error) {
@@ -121,6 +121,27 @@ async function send(message) {
     if (receiptKey) await chrome.storage.local.set({ [receiptKey]: record });
     return record;
   } finally { busy = false; }
+}
+
+function headerValue(message, name) {
+  return message?.payload?.headers?.find(header => header.name?.toLowerCase() === name.toLowerCase())?.value || '';
+}
+
+async function checkReplies(message) {
+  if (busy) throw new Error('Wait for the current delivery to finish before checking replies.');
+  if (!Array.isArray(message.items) || message.items.length > 200) throw new Error('Reply checks support up to 200 recipients at a time.');
+  const { token, email } = await verifiedAccount(true);
+  if (message.from !== email) throw new Error('Reconnect the Gmail account that sent this campaign before checking replies.');
+  const replied = [];
+  for (const item of message.items) {
+    if (!item?.id || !item.threadId || !item.messageId) continue;
+    const response = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/threads/${encodeURIComponent(item.threadId)}?format=metadata&metadataHeaders=From`, { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(15000) });
+    if (!response.ok) continue;
+    const thread = await response.json();
+    const reply = thread.messages?.find(candidate => candidate.id !== item.messageId && candidate.labelIds?.includes('INBOX') && !headerValue(candidate, 'From').toLowerCase().includes(email.toLowerCase()));
+    if (reply) replied.push({ id: item.id, at: new Date(Number(reply.internalDate) || Date.now()).toISOString() });
+  }
+  return { checked: message.items.filter(item => item?.threadId && item?.messageId).length, replied };
 }
 
 function validDashboard(config) {
@@ -183,6 +204,7 @@ async function route(message, sender) {
   if (message.type === 'DASHBOARD_DISCONNECT') { await chrome.storage.local.remove('dashboardConnection'); return {}; }
   if (message.type === 'DASHBOARD_SYNC') return dashboardSync(message.data);
   if (message.type === 'SHEETS_IMPORT') return importSheet(message);
+  if (message.type === 'CHECK_REPLIES') return checkReplies(message);
   if (message.type === 'CONNECT') return connect();
   if (message.type === 'DISCONNECT') {
     if (busy) throw new Error('Wait for the current delivery to finish before disconnecting.');
