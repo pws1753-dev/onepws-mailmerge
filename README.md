@@ -14,8 +14,11 @@ A standalone personal Chrome extension using your OnePWS logo and favicon. It se
 - Locally bundled Be Vietnam Pro typefaces across the workspace and Gmail launcher; no remote font requests.
 - A template library to save, apply, and delete reusable subjects/messages without storing contact lists in templates.
 - Privacy controls for session-only workspace storage and explicit deletion of saved data plus Gmail disconnection.
+- Google Sheets recipient import from a selected read-only range.
+- Campaign-thread reply checks that use Gmail metadata only; message bodies are neither read nor saved.
+- A Gmail compose action that imports the compose subject and plain-text message into a OnePWS campaign workspace.
 
-This is a new personal mail-merge implementation, not feature parity with the previous server-backed product. It does not include attachments, HTML email, open/click tracking, reply detection, automated follow-ups, scheduled background campaigns, Google Sheets integration, or SMTP delivery. Scheduling and tracking would need additional development and potentially a hosted backend. Keep the workspace tab open and Chrome awake during a campaign; campaign progress resumes manually after a restart.
+This is a new personal mail-merge implementation, not a copy of another mail product. It does not include attachments, HTML email, open/click tracking, automated follow-ups, scheduled background campaigns, or SMTP delivery. Inbox placement and spam classification cannot be inferred from Gmail alone. Keep the workspace tab open and Chrome awake during a campaign; campaign progress resumes manually after a restart.
 
 ## One-time Google setup
 
@@ -23,7 +26,7 @@ This is a new personal mail-merge implementation, not feature parity with the pr
 2. Copy the extension ID shown by Chrome or in the workspace's **Setup guide**. The included manifest public key keeps this ID stable. Do not remove or regenerate that key.
 3. Create a project in [Google Cloud](https://console.cloud.google.com/) and enable the **Gmail API**.
 4. Configure **Google Auth Platform** branding and audience. For personal testing with an External app, add your own Gmail address as a test user. A Workspace Internal app is another option if your organization supports it. Google's consent/testing policies and Workspace administrator settings determine access.
-5. Configure the requested scopes: `https://www.googleapis.com/auth/gmail.send` and `https://www.googleapis.com/auth/userinfo.email`. The extension needs sending access and the identity of the sending account; it does not request inbox reading access.
+5. Configure the requested scopes: `https://www.googleapis.com/auth/gmail.send`, `https://www.googleapis.com/auth/gmail.readonly`, `https://www.googleapis.com/auth/spreadsheets.readonly`, and `https://www.googleapis.com/auth/userinfo.email`. Read-only Gmail access is used only to detect replies in campaign threads; Google Sheets access is used only to read the selected recipient range.
 6. Create an OAuth client with application type **Chrome Extension** and the exact extension ID from step 2. A web application client or service account is not interchangeable.
 7. With Node.js installed, run this command in the extension folder, replacing the example with your real client ID:
 
@@ -43,7 +46,7 @@ Import UTF-8 CSV contacts with a header such as `Email,FirstName,Company` by upl
 
 Review several recipients, send a test to your own address, then choose **Review campaign** and confirm the exact sender and recipient count. Sending a test is a real email to the test address. Campaigns stop on the first failed or unconfirmed delivery. **Review & resume** retries definite failures and remaining contacts; it skips sent and unconfirmed messages. Check unconfirmed deliveries in Gmail Sent. If you need to resend those, create a separate CSV containing only recipients you have confirmed were not sent. Starting a new campaign resets its progress and makes its contacts eligible to send again.
 
-The Gmail floating launcher opens the same workspace. It does not extract your inbox or use Gmail's compose form. Connecting a different account requires starting a new campaign or reconnecting the original sender. **New campaign** clears the current contacts, subject, message, and campaign name after confirmation; save a template and export your report first.
+The Gmail floating launcher opens the same workspace. In a Gmail compose window, choose **OnePWS campaign** to copy that compose window's subject and plain-text message into the OnePWS campaign workspace; it does not read your inbox. Connect Google Sheets from the recipients panel, paste the Sheet URL, select a range such as `A:Z` or `Leads!A:Z`, and import. Connecting a different account requires starting a new campaign or reconnecting the original sender. **New campaign** clears the current contacts, subject, message, and campaign name after confirmation; save a template and export your report first.
 
 Drafts, contacts, and campaign message contents are saved in this Chrome profile's extension storage by default. Under **Privacy & data**, turn **Remember my workspace** off to move the workspace to session memory; it then survives a tab reload but is cleared when Chrome exits, the extension reloads, or the extension is disabled. Saved templates and delivery receipts remain local until explicitly cleared. New delivery receipts contain a SHA-256 payload fingerprint, status, time, optional error, and Gmail message ID rather than the recipient address or message body. Older receipts may still contain recipient addresses until cleared.
 
