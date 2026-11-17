@@ -56,13 +56,15 @@
   function addComposeButton(compose) {
     if (compose.querySelector('.onepws-compose-button')) return;
     const sendButton = compose.querySelector('[role="button"][aria-label^="Send"], [data-tooltip^="Send"]');
-    const toolbar = compose.querySelector('[role="toolbar"]') || sendButton?.parentElement;
+    // Gmail's first role=toolbar is often the formatting row. Prefer the Send
+    // button's container so OnePWS always sits beside the actual Send control.
+    const toolbar = sendButton?.parentElement || compose.querySelector('[role="toolbar"]');
     if (!toolbar) return;
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'onepws-compose-button';
-    button.textContent = 'OnePWS';
-    button.title = 'Open OnePWS campaign controls';
+    button.textContent = 'OnePWS Send';
+    button.title = 'Open OnePWS campaign controls beside Gmail Send';
     button.addEventListener('click', () => togglePanel(compose));
     if (sendButton && sendButton.parentElement === toolbar) toolbar.insertBefore(button, sendButton);
     else toolbar.append(button);
