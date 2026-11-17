@@ -11,7 +11,7 @@ This is the central reporting service for OnePWS Mail Merge. It accepts signed c
 
 ## Production at mailmerge.onepws.com
 
-Use Hostinger Node.js hosting and set the variables from `.env.example` in its environment-variable panel. Set the application start command to `npm run start`, application root to `dashboard`, and port to Hostinger's assigned `PORT`. Point the subdomain at the Node application only after the hosting target is confirmed.
+Use Hostinger Node.js hosting and set the variables from `.env.example` in its environment-variable panel. Set the application root to `dashboard`; either `app.js` (Hostinger default) or `server.js` is valid as the entry file. The `app.js` file is a safe startup bridge to `server.js`. Point the subdomain at the Node application only after the hosting target is confirmed.
 
 ## Data signals
 
