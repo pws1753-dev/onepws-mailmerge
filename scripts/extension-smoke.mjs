@@ -45,7 +45,7 @@ try {
     if (message.method === 'Fetch.requestPaused') cdp('Fetch.fulfillRequest', {
       requestId: message.params.requestId, responseCode: 200,
       responseHeaders: [{ name: 'Content-Type', value: 'text/html' }],
-      body: Buffer.from('<!doctype html><html><head><title>OnePWS isolated launcher test</title></head><body>Local Gmail-origin test fixture. No Gmail account or message is loaded.</body></html>').toString('base64')
+      body: Buffer.from('<!doctype html><html><head><title>OnePWS isolated launcher test</title></head><body><div role="dialog"><input name="subjectbox" value="Fixture subject"><div contenteditable="true" role="textbox" aria-label="Message Body">Hello https://onepws.com</div><div class="footer"><div role="button" aria-label="Send">Send</div></div></div></body></html>').toString('base64')
     }).catch(error => errors.push(error.message));
   };
   function cdp(method, params = {}) {
@@ -113,12 +113,23 @@ try {
     await sleep(100);
   }
   assert.equal(await evaluate(`document.getElementById('onepws-launcher')?.textContent`), 'OnePWS');
+  assert.equal(await evaluate(`document.querySelector('.onepws-compose-button')?.textContent`), 'OnePWS Send');
+  await evaluate(`document.querySelector('.onepws-compose-button').click()`);
+  assert.ok((await evaluate(`document.querySelector('.onepws-panel-kicker')?.textContent`)).includes('V1.2'));
+  await evaluate(`const input=document.querySelector('.onepws-test-email'); input.value='test@example.com'; input.dispatchEvent(new Event('change',{bubbles:true}));`);
+  await sleep(100);
+  await evaluate(`document.querySelector('[data-field="FirstName"]').click()`);
+  assert.ok((await evaluate(`document.querySelector('[contenteditable="true"]').textContent`)).includes('{{FirstName}}'));
+  await evaluate(`document.querySelector('[data-onepws-action="links"]').click()`);
+  assert.ok((await evaluate(`document.querySelector('.onepws-panel-status').textContent`)).includes('1 link'));
   await evaluate('document.fonts.ready');
   assert.ok(await evaluate(`document.fonts.check('500 14px "OnePWS Be Vietnam Pro"')`));
   const contentContext = contexts.findLast(context => context.origin === `chrome-extension://${id}` && context.auxData?.isDefault === false);
   assert.ok(contentContext, 'Gmail launcher must run in the extension isolated world. Contexts: ' + JSON.stringify(contexts));
   const boundary = await cdp('Runtime.evaluate', { contextId: contentContext.id, expression: `chrome.runtime.sendMessage({ type: 'STATUS' })`, awaitPromise: true, returnByValue: true });
   assert.equal(boundary.result.value.ok, false, 'The Gmail content script must not access privileged actions.');
+  const panelData = await cdp('Runtime.evaluate', { contextId: contentContext.id, expression: `chrome.runtime.sendMessage({ type: 'GMAIL_PANEL_DATA' })`, awaitPromise: true, returnByValue: true });
+  assert.equal(panelData.result.value.result.preferences.testEmail, 'test@example.com');
   const access = await cdp('Runtime.evaluate', { contextId: contentContext.id, expression: `chrome.storage.local.get('workspace').then(() => 'allowed', () => 'denied')`, awaitPromise: true, returnByValue: true });
   assert.equal(access.result.value, 'denied', 'Personal extension storage must be inaccessible to Gmail content scripts.');
   assert.deepEqual(errors, []);

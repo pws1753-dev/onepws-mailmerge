@@ -26,9 +26,34 @@ async function importGmailDraft(message, sender) {
   const body = String(message.draft?.body || '').slice(0, 100000);
   const testEmail = String(message.draft?.testEmail || '').trim().slice(0, 254);
   if (testEmail && !isEmail(testEmail)) throw new Error('Enter a valid test email address.');
-  if (!subject && !body) throw new Error('Write a subject or message in Gmail before opening OnePWS.');
   await chrome.storage.session.set({ gmailComposeDraft: { subject, body, testEmail, importedAt: new Date().toISOString() } });
   await openWorkspace();
+  return {};
+}
+
+async function gmailPanelData(sender) {
+  if (!isGmailPage(sender)) throw new Error('OnePWS Gmail controls are only available inside Gmail.');
+  const { gmailPanelPreferences, templates } = await chrome.storage.local.get(['gmailPanelPreferences', 'templates']);
+  return {
+    preferences: { testEmail: String(gmailPanelPreferences?.testEmail || '').slice(0, 254) },
+    templates: Array.isArray(templates) ? templates.slice(0, 100).map(template => ({
+      id: String(template.id || ''), name: String(template.name || 'Untitled template').slice(0, 80),
+      subject: String(template.subject || '').slice(0, 998), body: String(template.body || '').slice(0, 100000)
+    })) : []
+  };
+}
+
+async function saveGmailPanelPreferences(message, sender) {
+  if (!isGmailPage(sender)) throw new Error('OnePWS Gmail controls are only available inside Gmail.');
+  const testEmail = String(message.preferences?.testEmail || '').trim().slice(0, 254);
+  if (testEmail && !isEmail(testEmail)) throw new Error('Enter a valid test email address.');
+  await chrome.storage.local.set({ gmailPanelPreferences: { testEmail } });
+  return { saved: true };
+}
+
+async function openDashboard(sender) {
+  if (!isGmailPage(sender)) throw new Error('Open reports from Gmail or the OnePWS workspace.');
+  await chrome.tabs.create({ url: DASHBOARD_DEFAULT });
   return {};
 }
 
@@ -204,6 +229,9 @@ async function route(message, sender) {
   if (!message || typeof message.type !== 'string') throw new Error('Invalid OnePWS request.');
   if (message.type === 'OPEN_WORKSPACE') return openWorkspace();
   if (message.type === 'IMPORT_GMAIL_DRAFT') return importGmailDraft(message, sender);
+  if (message.type === 'GMAIL_PANEL_DATA') return gmailPanelData(sender);
+  if (message.type === 'GMAIL_PANEL_SAVE') return saveGmailPanelPreferences(message, sender);
+  if (message.type === 'OPEN_DASHBOARD') return openDashboard(sender);
   // Gmail content scripts may launch the workspace, but cannot connect or send.
   if (sender.url !== chrome.runtime.getURL('app.html')) throw new Error('Open the OnePWS workspace to perform this action.');
   if (message.type === 'STATUS') {
@@ -236,7 +264,7 @@ async function route(message, sender) {
     if (busy) throw new Error('Wait for the current delivery to finish before clearing data.');
     await chrome.identity.clearAllCachedAuthTokens();
     const data = await chrome.storage.local.get(null);
-    const keys = Object.keys(data).filter(key => ['workspace', 'templates', 'preferences', 'dashboardConnection'].includes(key) || key.startsWith('delivery:'));
+    const keys = Object.keys(data).filter(key => ['workspace', 'templates', 'preferences', 'dashboardConnection', 'gmailPanelPreferences'].includes(key) || key.startsWith('delivery:'));
     if (keys.length) await chrome.storage.local.remove(keys);
     await chrome.storage.session.remove(['workspace', 'connectedEmail']);
     return {};
