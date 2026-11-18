@@ -68,7 +68,7 @@ try {
   }
   assert.equal(await evaluate(`typeof document.getElementById('import')?.onclick`), 'function', 'The real workspace must initialize.');
   assert.equal(await evaluate('chrome.runtime.id'), id);
-  assert.equal(await evaluate('chrome.runtime.getManifest().version'), '1.1.0');
+  assert.equal(await evaluate('chrome.runtime.getManifest().version'), '1.2.0');
   const status = await evaluate(`chrome.runtime.sendMessage({ type: 'STATUS' })`);
   assert.equal(status.ok, true); assert.equal(status.result.configured, true); assert.equal(status.result.email, '');
   await evaluate('document.fonts.ready');

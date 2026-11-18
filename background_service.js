@@ -24,8 +24,10 @@ async function importGmailDraft(message, sender) {
   if (!isGmailPage(sender)) throw new Error('Gmail compose import is only available inside Gmail.');
   const subject = String(message.draft?.subject || '').replace(/[\r\n]+/g, ' ').slice(0, 998);
   const body = String(message.draft?.body || '').slice(0, 100000);
+  const testEmail = String(message.draft?.testEmail || '').trim().slice(0, 254);
+  if (testEmail && !isEmail(testEmail)) throw new Error('Enter a valid test email address.');
   if (!subject && !body) throw new Error('Write a subject or message in Gmail before opening OnePWS.');
-  await chrome.storage.session.set({ gmailComposeDraft: { subject, body, importedAt: new Date().toISOString() } });
+  await chrome.storage.session.set({ gmailComposeDraft: { subject, body, testEmail, importedAt: new Date().toISOString() } });
   await openWorkspace();
   return {};
 }

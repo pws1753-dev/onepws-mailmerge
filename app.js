@@ -348,6 +348,7 @@ async function init() {
   if (gmailDraft.draft && !campaign) {
     $('subject').value = gmailDraft.draft.subject;
     $('body').value = gmailDraft.draft.body;
+    if (gmailDraft.draft.testEmail) $('test-email').value = gmailDraft.draft.testEmail;
     notice('Gmail compose draft loaded. Add recipients, preview, then review the campaign.', true);
     await save();
   }

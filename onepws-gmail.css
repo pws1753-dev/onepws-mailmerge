@@ -12,6 +12,8 @@
   bottom: 26px;
   z-index: 2147483000;
   display: flex;
+  visibility: hidden;
+  pointer-events: none;
   align-items: center;
   gap: 8px;
   padding: 10px 17px 10px 12px;
@@ -29,13 +31,21 @@
 .onepws-compose-button { margin-left: 8px; min-height: 32px; padding: 0 12px; border: 0; border-radius: 5px; background: #d9343e; color: #fff; font: 600 12px/1.2 'OnePWS Be Vietnam Pro', Arial, sans-serif; cursor: pointer; }
 .onepws-compose-button:hover { background: #bd2630; }
 .onepws-compose-button:focus-visible { outline: 3px solid #d9252b; outline-offset: 2px; }
-.onepws-gmail-panel { position: absolute; z-index: 2147483000; right: 8px; bottom: 54px; width: min(360px, calc(100vw - 32px)); max-height: min(610px, calc(100vh - 120px)); overflow: auto; box-sizing: border-box; border: 1px solid #d9dfea; border-radius: 12px; background: #fff; color: #16233e; box-shadow: 0 16px 42px #15223d38; font: 500 13px/1.45 'OnePWS Be Vietnam Pro', Arial, sans-serif; }
+.onepws-gmail-panel { position: fixed; z-index: 2147483000; top: 122px; right: 18px; bottom: 22px; width: min(430px, calc(100vw - 36px)); overflow: auto; box-sizing: border-box; border: 1px solid #d9dfea; border-radius: 10px; background: #fff; color: #16233e; box-shadow: 0 16px 42px #15223d38; font: 500 13px/1.45 'OnePWS Be Vietnam Pro', Arial, sans-serif; }
 .onepws-gmail-panel[hidden] { display: none; }
 .onepws-panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 17px 18px 14px; color: #fff; background: #172743; border-radius: 11px 11px 0 0; }
 .onepws-panel-header strong { display: block; margin-top: 2px; font-size: 18px; line-height: 1.15; }
 .onepws-panel-kicker, .onepws-panel-label { display: block; color: #ff5962; font-size: 9px; font-weight: 700; letter-spacing: .17em; }
 .onepws-panel-close { width: 28px; height: 28px; padding: 0; border: 1px solid #6d7890; border-radius: 7px; background: transparent; color: #fff; font-size: 21px; line-height: 1; cursor: pointer; }
 .onepws-panel-body { padding: 14px; }
+.onepws-tool-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 14px; }
+.onepws-tool-strip button { min-height: 34px; border: 1px solid #dce2ec; border-radius: 6px; background: #f6f8fb; color: #34425c; font: 700 10px/1 'OnePWS Be Vietnam Pro', Arial, sans-serif; cursor: pointer; }
+.onepws-tool-strip button:first-child { border-color: #d9343e; background: #fff0f1; color: #bd2630; }
+.onepws-test-row { display: block; margin-bottom: 12px; }
+.onepws-test-row label { display: block; margin-bottom: 5px; color: #172743; font-size: 11px; font-weight: 700; }
+.onepws-test-row > div { display: flex; gap: 6px; }
+.onepws-test-email { min-width: 0; flex: 1; height: 36px; box-sizing: border-box; padding: 0 10px; border: 1px solid #d7deeb; border-radius: 6px; color: #172743; font: 500 11px/1 'OnePWS Be Vietnam Pro', Arial, sans-serif; }
+.onepws-test-open { min-height: 36px; padding: 0 12px; border: 0; border-radius: 6px; background: #172743; color: #fff; font: 700 10px/1 'OnePWS Be Vietnam Pro', Arial, sans-serif; cursor: pointer; }
 .onepws-panel-card { margin: 0 0 10px; padding: 13px; border: 1px solid #e1e6ef; border-radius: 9px; background: #fff; }
 .onepws-draft-card { background: #fbfcff; }
 .onepws-panel-subject { display: block; margin-top: 4px; overflow: hidden; color: #172743; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
@@ -60,3 +70,4 @@
 .onepws-option-row b { color: #178967; font-size: 10px; }
 .onepws-wide { margin-top: 11px; }
 .onepws-panel-status { margin: 11px 2px 1px; color: #7987a0; font-size: 10px; }
+@media (max-width: 700px) { .onepws-gmail-panel { top: 72px; right: 8px; bottom: 8px; width: calc(100vw - 16px); } }

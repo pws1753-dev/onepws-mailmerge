@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "OnePWS Mail Merge",
   "short_name": "OnePWS",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "minimum_chrome_version": "116",
   "description": "Personal Gmail mail merge by OnePWS. Import contacts, preview personalized emails, and send from your own account.",
   "permissions": [
