@@ -33,7 +33,10 @@ const app = readFileSync(join(root, 'app.js'), 'utf8');
 for (const [, id] of app.matchAll(/\$\('([^']+)'\)/g)) assert.ok(ids.includes(id), `Missing app element: ${id}`);
 assert.ok(!/\.innerHTML\s*=|insertAdjacentHTML|\beval\s*\(|new Function\s*\(/.test(app), 'App must render imported text using safe DOM APIs.');
 for (const file of ['app.css', 'onepws-gmail.css']) assert.ok(!/@import|url\(['"]?https?:/i.test(readFileSync(join(root, file), 'utf8')), 'Fonts and visual assets must be local.');
-function files(path) { return readdirSync(path, { withFileTypes: true }).flatMap(entry => entry.isDirectory() ? (entry.name === 'node_modules' ? [] : files(join(path, entry.name))) : [join(path, entry.name)]); }
+// Keep local third-party reference material out of the OnePWS build and checks.
+// It is neither packaged nor part of this independent implementation.
+const ignoredDirectories = new Set(['node_modules', 'gmass-real-files', '.git']);
+function files(path) { return readdirSync(path, { withFileTypes: true }).flatMap(entry => entry.isDirectory() ? (ignoredDirectories.has(entry.name) ? [] : files(join(path, entry.name))) : [join(path, entry.name)]); }
 for (const file of files(root)) {
   if (['.js', '.mjs'].includes(extname(file))) execFileSync(process.execPath, ['--check', file]);
   if (['.js', '.mjs', '.json', '.html', '.css'].includes(extname(file)) && !file.endsWith('check.mjs')) {

@@ -42,13 +42,16 @@
       <header class="onepws-panel-header"><div><span class="onepws-panel-kicker">ONEPWS MAIL MERGE</span><strong>Campaign controls</strong></div><button type="button" class="onepws-panel-close" aria-label="Close OnePWS controls">Close</button></header>
       <div class="onepws-panel-body">
         <section class="onepws-panel-card onepws-draft-card"><span class="onepws-panel-label">GMAIL DRAFT</span><strong class="onepws-panel-subject"></strong><p class="onepws-panel-message"></p></section>
-        <section class="onepws-panel-card"><div class="onepws-panel-title"><strong>Recipients & personalization</strong><span>01</span></div><p>Import a CSV or Google Sheet, choose the email column, and insert fields such as <code>{{FirstName}}</code>.</p><button type="button" class="onepws-open-workspace">Open campaign studio</button></section>
-        <section class="onepws-panel-card"><div class="onepws-panel-title"><strong>Delivery safeguards</strong><span>02</span></div><ul class="onepws-panel-list"><li>Preview every merge field before delivery</li><li>Send an explicit test email first</li><li>Pause safely; completed sends are not resent</li></ul></section>
-        <details class="onepws-panel-details"><summary>Campaign options</summary><p>Templates, test delivery, reply checks and delivery reports are configured in OnePWS campaign studio so every action is reviewed before email is sent.</p></details>
-        <p class="onepws-panel-status" role="status">No emails are sent from this panel. Review and confirm in OnePWS.</p>
+        <section class="onepws-panel-card onepws-compose-actions"><div class="onepws-panel-title"><strong>Campaign recipients</strong><span>01</span></div><p>Connect a Google Sheet or import a CSV. OnePWS removes duplicates and checks addresses before delivery.</p><div class="onepws-panel-buttons"><button type="button" class="onepws-open-workspace">Add recipients</button><button type="button" class="onepws-panel-link" data-onepws-action="templates">Templates</button></div></section>
+        <section class="onepws-panel-card"><div class="onepws-panel-title"><strong>Personalize</strong><span>02</span></div><p>Use fields from your recipient list directly in this Gmail draft.</p><div class="onepws-field-preview"><code>{{FirstName}}</code><code>{{Company}}</code><span>Choose fields in campaign studio</span></div></section>
+        <details class="onepws-panel-details" open><summary>Delivery</summary><div class="onepws-option-row"><span>Individual Gmail messages</span><b>Enabled</b></div><div class="onepws-option-row"><span>Test email and live preview</span><b>Required</b></div><button type="button" class="onepws-open-workspace onepws-wide">Review campaign</button></details>
+        <details class="onepws-panel-details"><summary>Follow-up & schedule</summary><p>Scheduled sending and reply-stop follow-ups need the OnePWS dashboard worker. They are not enabled in this local Gmail panel yet.</p></details>
+        <details class="onepws-panel-details"><summary>Privacy & deliverability</summary><p>OnePWS sends through your Gmail account. It does not bypass Gmail limits or claim inbox/spam placement without real seed-inbox data.</p></details>
+        <p class="onepws-panel-status" role="status">No email is sent from this panel. Open OnePWS to preview, test and explicitly confirm delivery.</p>
       </div>`;
     $('.onepws-panel-close', panel).addEventListener('click', () => panel.remove());
-    $('.onepws-open-workspace', panel).addEventListener('click', () => openWorkspace(compose, panel));
+    panel.querySelectorAll('.onepws-open-workspace').forEach(button => button.addEventListener('click', () => openWorkspace(compose, panel)));
+    panel.querySelectorAll('[data-onepws-action]').forEach(button => button.addEventListener('click', () => openWorkspace(compose, panel)));
     compose.append(panel);
     updatePanelSummary(panel, compose);
   }

@@ -45,8 +45,18 @@
 .onepws-open-workspace { width: 100%; margin-top: 12px; min-height: 36px; border: 0; border-radius: 7px; background: #d9343e; color: #fff; font: 700 12px/1 'OnePWS Be Vietnam Pro', Arial, sans-serif; cursor: pointer; }
 .onepws-open-workspace:hover { background: #bd2630; }
 .onepws-open-workspace:disabled { opacity: .7; cursor: wait; }
+.onepws-panel-buttons { display: flex; gap: 8px; margin-top: 12px; }
+.onepws-panel-buttons .onepws-open-workspace { width: auto; flex: 1; margin: 0; }
+.onepws-panel-link { min-height: 36px; padding: 0 11px; border: 1px solid #d7deeb; border-radius: 7px; background: #fff; color: #34425c; font: 700 11px/1 'OnePWS Be Vietnam Pro', Arial, sans-serif; cursor: pointer; }
+.onepws-panel-link:hover { border-color: #d9343e; color: #bd2630; }
+.onepws-field-preview { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.onepws-field-preview code { padding: 4px 6px; border-radius: 4px; background: #fff0f1; color: #c72f39; font: 600 10px/1.2 'OnePWS Be Vietnam Pro', Arial, sans-serif; }
+.onepws-field-preview span { width: 100%; margin-top: 2px; color: #78859b; font-size: 10px; }
 .onepws-panel-list { display: grid; gap: 5px; margin: 9px 0 0; padding: 0; color: #566682; font-size: 11px; list-style: none; }
 .onepws-panel-list li::before { content: '✓'; margin-right: 7px; color: #1b9b73; font-weight: 700; }
 .onepws-panel-details { padding: 12px 3px; border-top: 1px solid #e6e9f0; border-bottom: 1px solid #e6e9f0; color: #172743; }
 .onepws-panel-details summary { cursor: pointer; font-weight: 700; }
+.onepws-option-row { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid #edf0f4; color: #596982; font-size: 11px; }
+.onepws-option-row b { color: #178967; font-size: 10px; }
+.onepws-wide { margin-top: 11px; }
 .onepws-panel-status { margin: 11px 2px 1px; color: #7987a0; font-size: 10px; }

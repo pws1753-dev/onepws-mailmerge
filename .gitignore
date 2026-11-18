@@ -3,4 +3,7 @@ dashboard/.env
 node_modules/
 dashboard/node_modules/
 *.log
+gmass-real-files/
+docs/reference/gmass-video-frames/
+docs/reference/gmass-video-contact-sheet.jpg
 
